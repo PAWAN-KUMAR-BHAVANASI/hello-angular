@@ -1,0 +1,50 @@
+<section class="card">
+  <p class="eyebrow">Checkout</p>
+  <h1>Your Cart</h1>
+
+  @if (cartItems.length === 0) {
+    <p class="empty-state">Your cart is empty.</p>
+  } @else {
+    <div class="cart-layout">
+      <div class="cart-items">
+        @for (item of cartItems; track item.id) {
+          <div class="cart-item">
+            <div>
+              <h3>{{ item.name }}</h3>
+              <p>{{ item.category }}</p>
+            </div>
+            <strong>{{ item.price | currency: 'INR' }}</strong>
+          </div>
+        }
+      </div>
+
+      <aside class="checkout-box">
+        <h3>Order Summary</h3>
+        <p>Total: <strong>{{ totalPrice | currency: 'INR' }}</strong></p>
+
+        <form [formGroup]="checkoutForm" (ngSubmit)="submitCheckout()">
+          <div class="field">
+            <label for="fullName">Full Name</label>
+            <input id="fullName" formControlName="fullName" type="text" />
+          </div>
+
+          <div class="field">
+            <label for="address">Address</label>
+            <textarea id="address" formControlName="address"></textarea>
+          </div>
+
+          <div class="field">
+            <label for="paymentMethod">Payment Method</label>
+            <select id="paymentMethod" formControlName="paymentMethod">
+              <option value="Card">Card</option>
+              <option value="UPI">UPI</option>
+              <option value="Cash on Delivery">Cash on Delivery</option>
+            </select>
+          </div>
+
+          <button class="primary-btn" type="submit">Place Order</button>
+        </form>
+      </aside>
+    </div>
+  }
+</section>

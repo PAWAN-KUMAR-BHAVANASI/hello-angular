@@ -1,0 +1,31 @@
+<section class="card">
+  <p class="eyebrow">{{ isEditMode ? 'Edit Product' : 'Add Product' }}</p>
+  <h1>{{ isEditMode ? 'Update product details' : 'Create a new product' }}</h1>
+
+  <form [formGroup]="productForm" (ngSubmit)="saveProduct()">
+    <div class="field">
+      <label for="name">Name</label>
+      <input id="name" formControlName="name" type="text" placeholder="Product name" />
+    </div>
+
+    <div class="field">
+      <label for="category">Category</label>
+      <input id="category" formControlName="category" type="text" placeholder="Category" />
+    </div>
+
+    <div class="field">
+      <label for="price">Price</label>
+      <input id="price" formControlName="price" type="number" min="1" />
+    </div>
+
+    <div class="field">
+      <label for="createdAt">Created date</label>
+      <input id="createdAt" formControlName="createdAt" type="date" />
+    </div>
+
+    <div class="form-actions">
+      <button class="primary-btn" type="submit">{{ isEditMode ? 'Update Product' : 'Save Product' }}</button>
+      <a class="secondary-btn" routerLink="/">Cancel</a>
+    </div>
+  </form>
+</section>

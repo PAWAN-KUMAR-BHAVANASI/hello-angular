@@ -1,0 +1,31 @@
+<section class="page-header">
+  <div>
+    <p class="eyebrow">Inventory</p>
+    <h1>Product Management</h1>
+  </div>
+
+  <a class="primary-btn" routerLink="/products/new">Add Product</a>
+</section>
+
+@if (products.length === 0) {
+  <div class="empty-state">No products available.</div>
+} @else {
+  <div class="product-grid">
+    @for (product of products; track product.id) {
+      <article class="product-card">
+        <div class="product-header">
+          <h3>{{ product.name }}</h3>
+          <span class="badge">{{ product.category }}</span>
+        </div>
+
+        <p class="price">{{ product.price | currency: 'INR' }}</p>
+        <p class="meta">Added on {{ product.createdAt | date: 'dd-MM-yyyy' }}</p>
+
+        <div class="actions">
+          <a class="secondary-btn" [routerLink]="['/products/edit', product.id]">Edit</a>
+          <button class="danger-btn" type="button" (click)="deleteProduct(product.id)">Delete</button>
+        </div>
+      </article>
+    }
+  </div>
+}

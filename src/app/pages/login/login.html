@@ -1,0 +1,29 @@
+<section class="card">
+  <p class="eyebrow">Account</p>
+  <h1>Login</h1>
+
+  <form [formGroup]="loginForm" (ngSubmit)="submitLogin()">
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" formControlName="email" type="email" placeholder="name@example.com" />
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <input id="password" formControlName="password" type="password" placeholder="Enter password" />
+    </div>
+
+    <label class="checkbox-row">
+      <input type="checkbox" formControlName="rememberMe" />
+      <span>Remember me</span>
+    </label>
+
+    <div class="form-actions">
+      <button class="primary-btn" type="submit">Login</button>
+    </div>
+
+    @if (loginMessage) {
+      <p class="success-message">{{ loginMessage }}</p>
+    }
+  </form>
+</section>
