@@ -1,12 +1,25 @@
 <header class="topbar">
-  <nav class="nav">
-    <a routerLink="/">Home</a>
-    <a routerLink="/products/new">Add Product</a>
-    <a routerLink="/login">Login</a>
-    <a routerLink="/cart">Cart</a>
-  </nav>
+  <div class="topbar-inner">
+    <div class="brand-wrap">
+      <span class="brand-mark">P</span>
+      <span class="brand-text">ProductFlow</span>
+    </div>
+
+    <nav class="nav" aria-label="Main navigation">
+      <a routerLink="/">Home</a>
+      <a routerLink="/products/new">Add Product</a>
+      <a routerLink="/login">Login</a>
+      <a routerLink="/cart">Cart</a>
+    </nav>
+  </div>
 </header>
 
 <main class="app-shell">
   <router-outlet></router-outlet>
 </main>
+
+@if (toastState$ | async; as toastState) {
+  <div class="toast toast-{{ toastState.type }}" role="status" aria-live="polite">
+    {{ toastState.message }}
+  </div>
+}

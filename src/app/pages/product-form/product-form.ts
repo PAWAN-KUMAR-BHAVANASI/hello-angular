@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ProductInput, ProductService } from '../../services/product.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-product-form',
@@ -20,6 +21,7 @@ export class ProductFormPage implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly productService: ProductService,
+    private readonly toastService: ToastService,
   ) {
     this.productForm = this.createProductForm();
   }
@@ -58,8 +60,10 @@ export class ProductFormPage implements OnInit {
 
     if (this.isEditMode && this.productId !== null) {
       this.productService.updateProduct(this.productId, productInput);
+      this.toastService.showSuccess('Product updated successfully.');
     } else {
       this.productService.addProduct(productInput);
+      this.toastService.showSuccess('Product saved successfully.');
     }
 
     this.router.navigateByUrl('/');

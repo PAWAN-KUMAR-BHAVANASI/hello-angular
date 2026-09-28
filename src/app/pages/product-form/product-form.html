@@ -4,22 +4,30 @@
 
   <form [formGroup]="productForm" (ngSubmit)="saveProduct()">
     <div class="field">
-      <label for="name">Name</label>
+      <label for="name">
+        Name<span class="required-mark">*</span>
+      </label>
       <input id="name" formControlName="name" type="text" placeholder="Product name" />
     </div>
 
     <div class="field">
-      <label for="category">Category</label>
+      <label for="category">
+        Category<span class="required-mark">*</span>
+      </label>
       <input id="category" formControlName="category" type="text" placeholder="Category" />
     </div>
 
     <div class="field">
-      <label for="price">Price</label>
+      <label for="price">
+        Price<span class="required-mark">*</span>
+      </label>
       <input id="price" formControlName="price" type="number" min="1" />
     </div>
 
     <div class="field">
-      <label for="createdAt">Created date</label>
+      <label for="createdAt">
+        Created date<span class="required-mark">*</span>
+      </label>
       <input id="createdAt" formControlName="createdAt" type="date" />
     </div>
 
