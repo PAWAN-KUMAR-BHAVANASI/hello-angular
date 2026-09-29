@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { ProductInput, ProductService } from '../../services/product.service';
 import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-product-form',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule],
   templateUrl: './product-form.html',
   styleUrl: './product-form.css',
 })
@@ -15,6 +15,16 @@ export class ProductFormPage implements OnInit {
   isEditMode = false;
   productId: number | null = null;
   productForm!: ReturnType<ProductFormPage['createProductForm']>;
+  categoryDrawerOpen = false;
+
+  readonly availableCategories = ['electronics', 'accessories', 'clothing', 'books'];
+
+  private readonly categoryLimits: Record<string, number> = {
+    electronics: 100000,
+    accessories: 15000,
+    clothing: 5000,
+    books: 2000,
+  };
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -24,6 +34,9 @@ export class ProductFormPage implements OnInit {
     private readonly toastService: ToastService,
   ) {
     this.productForm = this.createProductForm();
+    this.productForm.get('category')?.valueChanges.subscribe(() => {
+      this.productForm.get('price')?.updateValueAndValidity();
+    });
   }
 
   ngOnInit(): void {
@@ -45,9 +58,10 @@ export class ProductFormPage implements OnInit {
     }
   }
 
-  saveProduct(): void {
+  async saveProduct(): Promise<void> {
     if (this.productForm.invalid) {
       this.productForm.markAllAsTouched();
+      this.toastService.showError('Product not added. Please fill all required fields.');
       return;
     }
 
@@ -55,14 +69,14 @@ export class ProductFormPage implements OnInit {
       name: this.productForm.value.name ?? '',
       category: this.productForm.value.category ?? '',
       price: Number(this.productForm.value.price ?? 0),
-      createdAt: new Date(this.productForm.value.createdAt ?? new Date()),
+      createdAt: this.productForm.value.createdAt ?? new Date(),
     };
 
     if (this.isEditMode && this.productId !== null) {
-      this.productService.updateProduct(this.productId, productInput);
+      await this.productService.updateProduct(this.productId, productInput);
       this.toastService.showSuccess('Product updated successfully.');
     } else {
-      this.productService.addProduct(productInput);
+      await this.productService.addProduct(productInput);
       this.toastService.showSuccess('Product saved successfully.');
     }
 
@@ -73,19 +87,64 @@ export class ProductFormPage implements OnInit {
     return this.formBuilder.nonNullable.group({
       name: ['', Validators.required],
       category: ['', Validators.required],
-      price: [0, [Validators.required, Validators.min(1)]],
+      price: [0, [Validators.required, Validators.min(1), this.priceLimitValidator()]],
       createdAt: [this.toDateInputValue(new Date()), Validators.required],
     });
   }
 
-  private static toDateInputValue(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+  openCategoryDrawer(): void {
+    this.categoryDrawerOpen = true;
+  }
+
+  closeCategoryDrawer(): void {
+    this.categoryDrawerOpen = false;
+  }
+
+  selectCategory(category: string): void {
+    this.productForm.get('category')?.setValue(category);
+    this.productForm.get('price')?.updateValueAndValidity();
+    this.closeCategoryDrawer();
+  }
+
+  getCategoryLimitText(): string {
+    const category = (this.productForm.get('category')?.value ?? '').toString().trim().toLowerCase();
+    const limit = this.categoryLimits[category];
+
+    if (!category || limit === undefined) {
+      return 'Choose a category to see the max allowed price.';
+    }
+
+    return `Max allowed for ${category}: ₹${limit.toLocaleString('en-IN')}`;
+  }
+
+  private priceLimitValidator() {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const price = Number(control.value ?? 0);
+      const category = (control.parent?.get('category')?.value ?? '').toString().trim().toLowerCase();
+
+      if (!category || price === 0) {
+        return null;
+      }
+
+      const limit = this.categoryLimits[category];
+
+      if (limit !== undefined && price > limit) {
+        return { categoryLimitExceeded: true };
+      }
+
+      return null;
+    };
+  }
+
+  private static toDateInputValue(date: Date | string): string {
+    const actualDate = typeof date === 'string' ? new Date(date) : date;
+    const year = actualDate.getFullYear();
+    const month = String(actualDate.getMonth() + 1).padStart(2, '0');
+    const day = String(actualDate.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
 
-  private toDateInputValue(date: Date): string {
+  private toDateInputValue(date: Date | string): string {
     return ProductFormPage.toDateInputValue(date);
   }
 }

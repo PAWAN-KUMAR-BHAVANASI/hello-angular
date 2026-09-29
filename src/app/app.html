@@ -1,17 +1,18 @@
 <header class="topbar">
-  <div class="topbar-inner">
-    <div class="brand-wrap">
-      <span class="brand-mark">P</span>
-      <span class="brand-text">ProductFlow</span>
-    </div>
-
-    <nav class="nav" aria-label="Main navigation">
-      <a routerLink="/">Home</a>
+  <nav class="nav" aria-label="Main navigation">
+    <a class="nav-back" routerLink="/" aria-label="Go back">←</a>
+    <a routerLink="/">Home</a>
+    @if (isAdmin()) {
       <a routerLink="/products/new">Add Product</a>
+    }
+    @if (!currentUser) {
       <a routerLink="/login">Login</a>
-      <a routerLink="/cart">Cart</a>
-    </nav>
-  </div>
+    }
+    <a routerLink="/cart">Cart</a>
+    @if (currentUser) {
+      <button type="button" class="logout-btn" (click)="logout()">Logout</button>
+    }
+  </nav>
 </header>
 
 <main class="app-shell">

@@ -1,11 +1,66 @@
+:host {
+  display: block;
+  padding: 2rem 0 3rem;
+}
+
+.login-card {
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 2rem 2.25rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: #6366f1;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+h1 {
+  margin: 0 0 1.25rem;
+  font-size: clamp(2rem, 2vw, 2.3rem);
+  line-height: 1.2;
+}
+
+.field {
+  display: grid;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+label {
+  font-weight: 700;
+  color: #334155;
+}
+
+input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
 .checkbox-row {
   display: flex;
   align-items: center;
   gap: 0.6rem;
+  margin: 0.5rem 0 1.25rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: center;
 }
 
 .success-message {
-  margin: 0;
+  margin: 1rem 0 0;
   padding: 0.8rem 1rem;
   border-radius: 8px;
   background: #dcfce7;

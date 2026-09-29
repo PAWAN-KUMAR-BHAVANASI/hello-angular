@@ -1,80 +1,101 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 
 export interface Product {
   id: number;
   name: string;
   category: string;
   price: number;
-  createdAt: Date;
+  createdAt: string;
 }
 
-export type ProductInput = Omit<Product, 'id'>;
+export interface ProductInput {
+  name: string;
+  category: string;
+  price: number;
+  createdAt: Date | string;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
-  products: Product[] = [
-    {
-      id: 1,
-      name: 'Laptop',
-      category: 'Electronics',
-      price: 55000,
-      createdAt: new Date(2026, 8, 20),
-    },
-    {
-      id: 2,
-      name: 'Wireless Mouse',
-      category: 'Accessories',
-      price: 800,
-      createdAt: new Date(2026, 8, 21),
-    },
-    {
-      id: 3,
-      name: 'Mechanical Keyboard',
-      category: 'Accessories',
-      price: 1500,
-      createdAt: new Date(2026, 8, 22),
-    },
-  ];
+  private readonly apiUrl = 'http://localhost:3002/products';
+  private readonly productsSubject = new BehaviorSubject<Product[]>([]);
+  readonly products$ = this.productsSubject.asObservable();
+
+  products: Product[] = [];
+
+  constructor(private readonly http: HttpClient) {
+    void this.loadInitialProducts();
+  }
+
+  private async loadInitialProducts(): Promise<void> {
+    try {
+      const products = await firstValueFrom(this.http.get<Product[]>(this.apiUrl));
+      this.setProducts(this.normalizeProducts(products));
+    } catch {
+      this.setProducts([]);
+    }
+  }
+
+  private normalizeProducts(products: Product[]): Product[] {
+    return products.map((product) => ({
+      ...product,
+      createdAt: typeof product.createdAt === 'string' ? product.createdAt : new Date(product.createdAt).toISOString(),
+    }));
+  }
+
+  private setProducts(products: Product[]): void {
+    this.products = products;
+    this.productsSubject.next([...this.products]);
+  }
 
   getAllProducts(): Product[] {
-    return this.products;
+    return [...this.products];
   }
 
   getProductById(id: number): Product | undefined {
     return this.products.find((product) => product.id === id);
   }
 
-  addProduct(product: ProductInput): Product {
-    const newProduct: Product = {
+  async addProduct(product: ProductInput): Promise<Product> {
+    const payload: Product = {
       ...product,
       id: Date.now(),
-      createdAt: product.createdAt instanceof Date ? product.createdAt : new Date(product.createdAt),
+      createdAt: new Date(product.createdAt).toISOString(),
     };
 
-    this.products.unshift(newProduct);
-    return newProduct;
+    const createdProduct = await firstValueFrom(this.http.post<Product>(this.apiUrl, payload));
+    this.products = [createdProduct, ...this.products];
+    this.productsSubject.next([...this.products]);
+    return createdProduct;
   }
 
-  updateProduct(id: number, updatedProduct: ProductInput): Product | undefined {
-    const index = this.products.findIndex((product) => product.id === id);
+  async updateProduct(id: number, updatedProduct: ProductInput): Promise<Product | undefined> {
+    const currentProduct = this.products.find((product) => product.id === id);
 
-    if (index === -1) {
+    if (!currentProduct) {
       return undefined;
     }
 
-    const productToUpdate: Product = {
-      ...this.products[index],
+    const payload: Product = {
+      ...currentProduct,
       ...updatedProduct,
-      createdAt: updatedProduct.createdAt instanceof Date ? updatedProduct.createdAt : new Date(updatedProduct.createdAt),
+      id,
+      createdAt: new Date(updatedProduct.createdAt).toISOString(),
     };
 
-    this.products[index] = productToUpdate;
-    return productToUpdate;
+    const updated = await firstValueFrom(this.http.put<Product>(`${this.apiUrl}/${id}`, payload));
+    this.products = this.products.map((product) => (product.id === id ? updated : product));
+    this.productsSubject.next([...this.products]);
+    return updated;
   }
 
-  deleteProduct(id: number): void {
+  async deleteProduct(id: number): Promise<void> {
+    await firstValueFrom(this.http.delete<void>(`${this.apiUrl}/${id}`));
     this.products = this.products.filter((product) => product.id !== id);
+    this.productsSubject.next([...this.products]);
   }
 }

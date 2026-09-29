@@ -1,39 +1,98 @@
-<section class="card">
-  <p class="eyebrow">{{ isEditMode ? 'Edit Product' : 'Add Product' }}</p>
-  <h1>{{ isEditMode ? 'Update product details' : 'Create a new product' }}</h1>
+<section class="card product-form-card">
+  <div class="form-header">
+    <p class="eyebrow">{{ isEditMode ? 'Edit Product' : 'Add Product' }}</p>
+    <h1>{{ isEditMode ? 'Update product details' : 'Create a new product' }}</h1>
+  </div>
 
   <form [formGroup]="productForm" (ngSubmit)="saveProduct()">
     <div class="field">
       <label for="name">
         Name<span class="required-mark">*</span>
       </label>
-      <input id="name" formControlName="name" type="text" placeholder="Product name" />
+      <input
+        id="name"
+        formControlName="name"
+        type="text"
+        placeholder="Product name"
+      />
     </div>
 
     <div class="field">
       <label for="category">
         Category<span class="required-mark">*</span>
       </label>
-      <input id="category" formControlName="category" type="text" placeholder="Category" />
+
+      <div class="category-picker">
+        <input
+          id="category"
+          formControlName="category"
+          type="text"
+          placeholder="Select category"
+          readonly
+        />
+        <button type="button" class="drawer-trigger" (click)="openCategoryDrawer()">
+          Browse
+        </button>
+      </div>
+
+      <small class="helper-text">{{ getCategoryLimitText() }}</small>
     </div>
 
     <div class="field">
       <label for="price">
         Price<span class="required-mark">*</span>
       </label>
-      <input id="price" formControlName="price" type="number" min="1" />
+      <input
+        id="price"
+        formControlName="price"
+        type="number"
+        min="1"
+        placeholder="Enter amount"
+      />
+
+      @if (productForm.get('price')?.hasError('categoryLimitExceeded')) {
+        <small class="error-text">
+          Price exceeds the max allowed for {{ productForm.get('category')?.value || 'this category' }}.
+        </small>
+      }
     </div>
 
     <div class="field">
       <label for="createdAt">
         Created date<span class="required-mark">*</span>
       </label>
-      <input id="createdAt" formControlName="createdAt" type="date" />
+      <input
+        id="createdAt"
+        formControlName="createdAt"
+        type="date"
+      />
     </div>
 
+    <!-- Centered button -->
     <div class="form-actions">
-      <button class="primary-btn" type="submit">{{ isEditMode ? 'Update Product' : 'Save Product' }}</button>
-      <a class="secondary-btn" routerLink="/">Cancel</a>
+      <button class="primary-btn" type="submit">
+        {{ isEditMode ? 'Update Product' : 'Save Product' }}
+      </button>
     </div>
   </form>
 </section>
+
+@if (categoryDrawerOpen) {
+  <div class="category-drawer-backdrop" (click)="closeCategoryDrawer()">
+    <aside class="category-drawer" (click)="$event.stopPropagation()">
+      <div class="category-drawer-header">
+        <h2>Select category</h2>
+        <button type="button" class="close-drawer" (click)="closeCategoryDrawer()">×</button>
+      </div>
+
+      <div class="category-list">
+        @for (category of availableCategories; track category) {
+          <button type="button" class="category-option" (click)="selectCategory(category)">
+            <span>{{ category }}</span>
+            <small>Max: ₹{{ categoryLimits[category].toLocaleString('en-IN') }}</small>
+          </button>
+        }
+      </div>
+    </aside>
+  </div>
+}

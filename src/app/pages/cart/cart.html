@@ -1,4 +1,4 @@
-<section class="card">
+<section class="card cart-card">
   <p class="eyebrow">Checkout</p>
   <h1>Your Cart</h1>
 
@@ -24,17 +24,23 @@
 
         <form [formGroup]="checkoutForm" (ngSubmit)="submitCheckout()">
           <div class="field">
-            <label for="fullName">Full Name</label>
+            <label for="fullName">
+              Full Name<span class="required-mark">*</span>
+            </label>
             <input id="fullName" formControlName="fullName" type="text" />
           </div>
 
           <div class="field">
-            <label for="address">Address</label>
+            <label for="address">
+              Address<span class="required-mark">*</span>
+            </label>
             <textarea id="address" formControlName="address"></textarea>
           </div>
 
           <div class="field">
-            <label for="paymentMethod">Payment Method</label>
+            <label for="paymentMethod">
+              Payment Method<span class="required-mark">*</span>
+            </label>
             <select id="paymentMethod" formControlName="paymentMethod">
               <option value="Card">Card</option>
               <option value="UPI">UPI</option>

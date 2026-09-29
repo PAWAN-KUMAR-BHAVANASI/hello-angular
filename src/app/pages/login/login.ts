@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +14,11 @@ export class LoginPage {
   loginMessage = '';
   loginForm!: ReturnType<LoginPage['createLoginForm']>;
 
-  constructor(private readonly formBuilder: FormBuilder) {
+  constructor(
+    private readonly formBuilder: FormBuilder,
+    private readonly authService: AuthService,
+    private readonly router: Router,
+  ) {
     this.loginForm = this.createLoginForm();
   }
 
@@ -30,6 +37,14 @@ export class LoginPage {
     }
 
     const email = this.loginForm.value.email ?? '';
-    this.loginMessage = `Welcome back, ${email}!`;
+    const password = this.loginForm.value.password ?? '';
+
+    try {
+      const user = this.authService.login(email, password);
+      this.loginMessage = `Welcome ${user.name}! You are logged in as ${user.role}.`;
+      this.router.navigateByUrl('/');
+    } catch (error) {
+      this.loginMessage = error instanceof Error ? error.message : 'Login failed.';
+    }
   }
 }

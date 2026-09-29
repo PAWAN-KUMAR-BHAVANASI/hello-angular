@@ -1,0 +1,28 @@
+[
+  {
+    "id": 1,
+    "name": "Laptop",
+    "category": "electronics",
+    "price": 55000,
+    "createdAt": "2026-09-20"
+  },
+  {
+    "id": 2,
+    "name": "Wireless Mouse",
+    "category": "accessories",
+    "price": 800,
+    "createdAt": "2026-09-21"
+  },
+  {
+    "id": 3,
+    "name": "Mechanical Keyboard",
+    "category": "accessories",
+    "price": 1500,
+    "createdAt": "2026-09-22"
+  },
+  {
+  "products": [
+    { "id": 1, "name": "Mobile", "category": "electronics", "price": 55000, "createdAt": "2026-09-20" }
+  ]
+}
+]

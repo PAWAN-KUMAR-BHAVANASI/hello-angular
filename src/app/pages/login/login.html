@@ -1,15 +1,19 @@
-<section class="card">
+<section class="card login-card">
   <p class="eyebrow">Account</p>
   <h1>Login</h1>
 
   <form [formGroup]="loginForm" (ngSubmit)="submitLogin()">
     <div class="field">
-      <label for="email">Email</label>
+      <label for="email">
+        Email<span class="required-mark">*</span>
+      </label>
       <input id="email" formControlName="email" type="email" placeholder="name@example.com" />
     </div>
 
     <div class="field">
-      <label for="password">Password</label>
+      <label for="password">
+        Password<span class="required-mark">*</span>
+      </label>
       <input id="password" formControlName="password" type="password" placeholder="Enter password" />
     </div>
 

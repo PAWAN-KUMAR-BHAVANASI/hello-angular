@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
+import { AuthService } from '../../services/auth.service';
 import { Product, ProductService } from '../../services/product.service';
 
 @Component({
@@ -13,12 +14,22 @@ import { Product, ProductService } from '../../services/product.service';
 export class ProductListPage {
   products: Product[] = [];
 
-  constructor(private readonly productService: ProductService) {
+  constructor(
+    private readonly productService: ProductService,
+    private readonly authService: AuthService,
+  ) {
+    this.productService.products$.subscribe((products) => {
+      this.products = products;
+    });
+
     this.products = this.productService.getAllProducts();
   }
 
-  deleteProduct(id: number): void {
-    this.productService.deleteProduct(id);
-    this.products = this.productService.getAllProducts();
+  isAdmin(): boolean {
+    return this.authService.hasPermission('Admin');
+  }
+
+  async deleteProduct(id: number): Promise<void> {
+    await this.productService.deleteProduct(id);
   }
 }

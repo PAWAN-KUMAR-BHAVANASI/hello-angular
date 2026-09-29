@@ -1,0 +1,40 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "name": "Laptop",
+      "category": "electronics",
+      "price": 55000,
+      "createdAt": "2024-01-10T00:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "name": "Headphones",
+      "category": "accessories",
+      "price": 7000,
+      "createdAt": "2024-02-12T00:00:00.000Z"
+    },
+    {
+      "id": "3",
+      "name": "T-Shirt",
+      "category": "clothing",
+      "price": 1200,
+      "createdAt": "2024-03-15T00:00:00.000Z"
+    },
+    {
+      "name": "Realme 9pro+",
+      "category": "electronics",
+      "price": 23000,
+      "createdAt": "2026-09-29T00:00:00.000Z",
+      "id": "auCil2LFnG4"
+    },
+    {
+      "name": "Realme 9pro+",
+      "category": "electronics",
+      "price": 23000,
+      "createdAt": "2026-09-29T00:00:00.000Z",
+      "id": "ghgbG8tNx8w"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

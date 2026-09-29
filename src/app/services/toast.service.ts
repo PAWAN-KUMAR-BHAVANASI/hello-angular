@@ -18,6 +18,11 @@ export class ToastService {
     setTimeout(() => this.toastSubject.next(null), 2600);
   }
 
+  showError(message: string): void {
+    this.toastSubject.next({ message, type: 'error' });
+    setTimeout(() => this.toastSubject.next(null), 2600);
+  }
+
   showInfo(message: string): void {
     this.toastSubject.next({ message, type: 'info' });
     setTimeout(() => this.toastSubject.next(null), 2600);
