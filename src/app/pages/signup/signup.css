@@ -1,0 +1,135 @@
+:host {
+  display: block;
+  padding: 2rem 0 3rem;
+}
+
+.signup-card {
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 2rem 2.25rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: #6366f1;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+h1 {
+  margin: 0 0 1.25rem;
+  font-size: 2.2rem;
+  line-height: 1.2;
+}
+
+form {
+  display: grid;
+  gap: 1rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.6rem;
+}
+
+label {
+  color: #334155;
+  font-weight: 700;
+}
+
+input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.9rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #fff;
+  font: inherit;
+}
+
+input:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 1px;
+}
+
+.required-mark {
+  margin-left: 0.2rem;
+  color: #dc2626;
+}
+
+.password-hint {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.field-error,
+.error-message {
+  margin: 0;
+  color: #b91c1c;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.error-message,
+.success-message {
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+}
+
+.error-message {
+  background: #fee2e2;
+}
+
+.success-message {
+  margin: 0;
+  background: #dcfce7;
+  color: #166534;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.primary-btn {
+  display: inline-flex;
+  justify-content: center;
+  padding: 0.8rem 1.1rem;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.mode-toggle {
+  display: block;
+  margin: 0.5rem auto 0;
+  color: #1d4ed8;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+
+@media (max-width: 600px) {
+  .signup-card {
+    padding: 1.25rem 1rem;
+    border-radius: 12px;
+  }
+
+  :host {
+    padding: 0.75rem 0 1.5rem;
+  }
+
+  .form-actions .primary-btn {
+    width: 100%;
+  }
+}

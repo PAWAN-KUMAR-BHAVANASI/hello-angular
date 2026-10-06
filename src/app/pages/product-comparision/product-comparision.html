@@ -1,0 +1,112 @@
+<section class="comparison-page">
+  <div class="page-header">
+    <div>
+      <p class="comparison-subtitle">Product insights</p>
+      <h1>Product Comparison</h1>
+    </div>
+
+    <div class="header-actions">
+      <a class="secondary-btn" routerLink="/">Back to products</a>
+      <button class="danger-btn" type="button" (click)="clearComparison()" [disabled]="products.length === 0">
+        Clear all
+      </button>
+    </div>
+  </div>
+
+  @if (products.length < 2) {
+    <div class="empty-comparison">
+      <h2>{{ products.length === 0 ? 'Choose two products' : 'Choose one more product' }}</h2>
+      <p>Select two products from the catalog to see their side-by-side comparison.</p>
+      @if (products.length === 1) {
+        <p class="selected-product">Selected: {{ products[0].name }}</p>
+      }
+      <a class="primary-btn" routerLink="/">Go to products</a>
+    </div>
+  } @else {
+    <div class="comparison-container">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th class="feature-column">Feature</th>
+            @for (product of products; track product.id) {
+              <th class="product-column">
+                <div class="product-title">{{ product.name }}</div>
+                <button class="remove-btn" type="button" (click)="removeProduct(product)">Remove</button>
+              </th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @if (isAdmin) {
+            <tr>
+              <td class="feature-name">Account</td>
+              @for (product of products; track product.id) {
+                <td>{{ product.ownerEmail || 'Unassigned' }}</td>
+              }
+            </tr>
+          }
+          <tr>
+            <td class="feature-name">Company</td>
+            @for (product of products; track product.id) {
+              <td>{{ product.brand || 'Laptop' }}</td>
+            }
+          </tr>
+          <tr>
+            <td class="feature-name">Model</td>
+            @for (product of products; track product.id) {
+              <td>{{ product.model || product.name }}</td>
+            }
+          </tr>
+          <tr>
+            <td class="feature-name">Processor</td>
+            @for (product of products; track product.id) {
+              <td>{{ product.specifications?.processor || 'Not specified' }}</td>
+            }
+          </tr>
+          <tr>
+            <td class="feature-name">Memory</td>
+            @for (product of products; track product.id) {
+              <td>{{ product.specifications?.ram || 'Not specified' }}</td>
+            }
+          </tr>
+          <tr>
+            <td class="feature-name">Storage</td>
+            @for (product of products; track product.id) {
+              <td>{{ product.specifications?.storage || 'Not specified' }}</td>
+            }
+          </tr>
+          <tr>
+            <td class="feature-name">Graphics</td>
+            @for (product of products; track product.id) {
+              <td>{{ product.specifications?.graphics || 'Not specified' }}</td>
+            }
+          </tr>
+          <tr>
+            <td class="feature-name">Display</td>
+            @for (product of products; track product.id) {
+              <td>{{ product.specifications?.display || 'Not specified' }}</td>
+            }
+          </tr>
+          <tr>
+            <td class="feature-name">Operating system</td>
+            @for (product of products; track product.id) {
+              <td>{{ product.specifications?.operatingSystem || 'Not specified' }}</td>
+            }
+          </tr>
+          <tr>
+            <td class="feature-name">Price</td>
+            @for (product of products; track product.id) {
+              <td class="price-value">{{ product.price | currency: 'INR' }}</td>
+            }
+          </tr>
+          <tr>
+            <td class="feature-name">Added date</td>
+            @for (product of products; track product.id) {
+              <td>{{ product.createdAt | date: 'dd-MM-yyyy' }}</td>
+            }
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

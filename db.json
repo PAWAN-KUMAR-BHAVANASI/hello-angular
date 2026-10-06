@@ -1,39 +1,324 @@
 {
   "products": [
     {
+      "name": "Lenovo ThinkPad E14 Gen 6",
+      "brand": "Lenovo",
+      "model": "ThinkPad E14 Gen 6",
+      "price": 89990,
+      "quantity": 7,
+      "specifications": {
+        "processor": "Intel Core Ultra 5 125U",
+        "ram": "16 GB DDR5",
+        "storage": "512 GB NVMe SSD",
+        "graphics": "Intel Graphics",
+        "display": "14-inch WUXGA IPS, anti-glare",
+        "operatingSystem": "Windows 11 Pro"
+      },
+      "createdAt": "2026-10-01T00:00:00.000Z",
+      "id": "OyCon3oOunA",
+      "ownerEmail": "bpk1234565@gmail.com"
+    },
+    {
+      "name": "Dell Inspiron 14 5440",
+      "brand": "Dell",
+      "model": "Inspiron 14 5440",
+      "price": 74990,
+      "quantity": 9,
+      "specifications": {
+        "processor": "Intel Core 5 120U",
+        "ram": "16 GB DDR5",
+        "storage": "512 GB NVMe SSD",
+        "graphics": "Intel Graphics",
+        "display": "14-inch FHD+ IPS",
+        "operatingSystem": "Windows 11 Home"
+      },
+      "createdAt": "2026-10-05T00:00:00.000Z",
+      "ownerEmail": "test2@gmail.com",
+      "id": "CypuYaZQ52M"
+    },
+    {
+      "name": "HP Pavilion Plus 14",
+      "brand": "HP",
+      "model": "Pavilion Plus 14-ew1000",
+      "price": 94990,
+      "quantity": 1,
+      "specifications": {
+        "processor": "Intel Core Ultra 5 125H",
+        "ram": "16 GB LPDDR5x",
+        "storage": "1 TB NVMe SSD",
+        "graphics": "Intel Arc Graphics",
+        "display": "14-inch 2.8K OLED, 120 Hz",
+        "operatingSystem": "Windows 11 Home"
+      },
+      "createdAt": "2026-10-01T00:00:00.000Z",
+      "ownerEmail": "test2@gmail.com",
+      "id": "KsDrS7WlVnA"
+    },
+    {
+      "name": "ASUS Vivobook S 15 OLED",
+      "brand": "ASUS",
+      "model": "Vivobook S 15 OLED S5506",
+      "price": 109990,
+      "quantity": 4,
+      "specifications": {
+        "processor": "Intel Core Ultra 7 155H",
+        "ram": "16 GB LPDDR5x",
+        "storage": "1 TB NVMe SSD",
+        "graphics": "Intel Arc Graphics",
+        "display": "15.6-inch 3K OLED, 120 Hz",
+        "operatingSystem": "Windows 11 Home"
+      },
+      "createdAt": "2026-10-01T00:00:00.000Z",
+      "ownerEmail": "test2@gmail.com",
+      "id": "h-65hy2O35I"
+    },
+    {
+      "id": "apple-macbook-air-m3-13",
+      "name": "Apple MacBook Air 13 M3",
+      "brand": "Apple",
+      "model": "MacBook Air 13-inch M3",
+      "price": 114900,
+      "quantity": 3,
+      "specifications": {
+        "processor": "Apple M3, 8-core CPU",
+        "ram": "16 GB unified memory",
+        "storage": "512 GB SSD",
+        "graphics": "8-core GPU",
+        "display": "13.6-inch Liquid Retina",
+        "operatingSystem": "macOS Sequoia"
+      },
+      "createdAt": "2026-10-05T00:00:00.000Z",
+      "ownerEmail": "admin@shop.com"
+    },
+    {
+      "id": "acer-swift-go-14",
+      "name": "Acer Swift Go 14",
+      "brand": "Acer",
+      "model": "Swift Go 14 SFG14",
+      "price": 79990,
+      "quantity": 7,
+      "specifications": {
+        "processor": "Intel Core Ultra 5 125H",
+        "ram": "16 GB LPDDR5x",
+        "storage": "512 GB NVMe SSD",
+        "graphics": "Intel Arc Graphics",
+        "display": "14-inch WUXGA IPS",
+        "operatingSystem": "Windows 11 Home"
+      },
+      "createdAt": "2026-10-05T00:00:00.000Z",
+      "ownerEmail": "admin@shop.com"
+    },
+    {
+      "id": "msi-modern-14-c13m",
+      "name": "MSI Modern 14",
+      "brand": "MSI",
+      "model": "Modern 14 C13M",
+      "price": 62990,
+      "quantity": 9,
+      "specifications": {
+        "processor": "Intel Core i5-1335U",
+        "ram": "16 GB DDR4",
+        "storage": "512 GB NVMe SSD",
+        "graphics": "Intel Iris Xe Graphics",
+        "display": "14-inch FHD IPS-level",
+        "operatingSystem": "Windows 11 Home"
+      },
+      "createdAt": "2026-10-05T00:00:00.000Z",
+      "ownerEmail": "admin@shop.com"
+    }
+  ],
+  "users": [
+    {
       "id": "1",
-      "name": "Laptop",
-      "category": "electronics",
-      "price": 55000,
-      "createdAt": "2024-01-10T00:00:00.000Z"
+      "email": "admin@shop.com",
+      "password": "Admin@123",
+      "role": "Admin",
+      "name": "Admin User"
     },
     {
       "id": "2",
-      "name": "Headphones",
-      "category": "accessories",
-      "price": 7000,
-      "createdAt": "2024-02-12T00:00:00.000Z"
+      "email": "customer@shop.com",
+      "password": "Customer@123",
+      "role": "Customer",
+      "name": "Customer User",
+      "cartItems": []
     },
     {
-      "id": "3",
-      "name": "T-Shirt",
-      "category": "clothing",
-      "price": 1200,
-      "createdAt": "2024-03-15T00:00:00.000Z"
+      "name": "Pavan Kumar.B",
+      "email": "bpk1234565@gmail.com",
+      "password": "Pavan@2004",
+      "role": "Customer",
+      "id": "KsEDFaIb2s4",
+      "cartItems": [
+        { "productId": "OyCon3oOunA", "quantity": 6 },
+        { "productId": "CypuYaZQ52M", "quantity": 2 }
+      ]
     },
     {
-      "name": "Realme 9pro+",
-      "category": "electronics",
-      "price": 23000,
-      "createdAt": "2026-09-29T00:00:00.000Z",
-      "id": "auCil2LFnG4"
+      "name": "test2",
+      "email": "test2@gmail.com",
+      "password": "Test@1234",
+      "id": "dt4B7jMu7Lc",
+      "cartItems": [
+        { "productId": "apple-macbook-air-m3-13", "quantity": 3 },
+        { "productId": "OyCon3oOunA", "quantity": 2 },
+        { "productId": "CypuYaZQ52M", "quantity": 2 }
+      ]
+    }
+  ],
+  "carts": [],
+  "orders": [
+    {
+      "ownerEmail": "bpk1234565@gmail.com",
+      "customerName": "Pavan Kumar",
+      "address": "Bengaluru",
+      "items": [
+        {
+          "productId": "OyCon3oOunA",
+          "productName": "Laptop",
+          "category": "electronics",
+          "price": 5755,
+          "quantity": 1
+        }
+      ],
+      "total": 5755,
+      "createdAt": "2026-10-05T04:22:14.018Z",
+      "status": "Placed",
+      "id": "H5q2h_4Wnr8"
     },
     {
-      "name": "Realme 9pro+",
-      "category": "electronics",
-      "price": 23000,
-      "createdAt": "2026-09-29T00:00:00.000Z",
-      "id": "ghgbG8tNx8w"
+      "ownerEmail": "bpk1234565@gmail.com",
+      "customerName": "Pavan Kumar",
+      "address": "Bengaluru",
+      "items": [
+        {
+          "productId": "KsDrS7WlVnA",
+          "productName": "HP Pavilion Plus 14",
+          "brand": "HP",
+          "model": "Pavilion Plus 14-ew1000",
+          "specifications": {
+            "processor": "Intel Core Ultra 5 125H",
+            "ram": "16 GB LPDDR5x",
+            "storage": "1 TB NVMe SSD",
+            "graphics": "Intel Arc Graphics",
+            "display": "14-inch 2.8K OLED, 120 Hz",
+            "operatingSystem": "Windows 11 Home"
+          },
+          "price": 94990,
+          "quantity": 2
+        },
+        {
+          "productId": "CypuYaZQ52M",
+          "productName": "Dell Inspiron 14 5440",
+          "brand": "Dell",
+          "model": "Inspiron 14 5440",
+          "specifications": {
+            "processor": "Intel Core 5 120U",
+            "ram": "16 GB DDR5",
+            "storage": "512 GB NVMe SSD",
+            "graphics": "Intel Graphics",
+            "display": "14-inch FHD+ IPS",
+            "operatingSystem": "Windows 11 Home"
+          },
+          "price": 74990,
+          "quantity": 1
+        }
+      ],
+      "total": 264970,
+      "createdAt": "2026-10-05T04:38:05.090Z",
+      "status": "Placed",
+      "id": "IWWtjnKARMc"
+    },
+    {
+      "ownerEmail": "bpk1234565@gmail.com",
+      "customerName": "Sourav",
+      "address": "Btm layout",
+      "items": [
+        {
+          "productId": "KsDrS7WlVnA",
+          "productName": "HP Pavilion Plus 14",
+          "brand": "HP",
+          "model": "Pavilion Plus 14-ew1000",
+          "specifications": {
+            "processor": "Intel Core Ultra 5 125H",
+            "ram": "16 GB LPDDR5x",
+            "storage": "1 TB NVMe SSD",
+            "graphics": "Intel Arc Graphics",
+            "display": "14-inch 2.8K OLED, 120 Hz",
+            "operatingSystem": "Windows 11 Home"
+          },
+          "price": 94990,
+          "quantity": 5
+        },
+        {
+          "productId": "apple-macbook-air-m3-13",
+          "productName": "Apple MacBook Air 13 M3",
+          "brand": "Apple",
+          "model": "MacBook Air 13-inch M3",
+          "specifications": {
+            "processor": "Apple M3, 8-core CPU",
+            "ram": "16 GB unified memory",
+            "storage": "512 GB SSD",
+            "graphics": "8-core GPU",
+            "display": "13.6-inch Liquid Retina",
+            "operatingSystem": "macOS Sequoia"
+          },
+          "price": 114900,
+          "quantity": 1
+        },
+        {
+          "productId": "h-65hy2O35I",
+          "productName": "ASUS Vivobook S 15 OLED",
+          "brand": "ASUS",
+          "model": "Vivobook S 15 OLED S5506",
+          "specifications": {
+            "processor": "Intel Core Ultra 7 155H",
+            "ram": "16 GB LPDDR5x",
+            "storage": "1 TB NVMe SSD",
+            "graphics": "Intel Arc Graphics",
+            "display": "15.6-inch 3K OLED, 120 Hz",
+            "operatingSystem": "Windows 11 Home"
+          },
+          "price": 109990,
+          "quantity": 1
+        },
+        {
+          "productId": "CypuYaZQ52M",
+          "productName": "Dell Inspiron 14 5440",
+          "brand": "Dell",
+          "model": "Inspiron 14 5440",
+          "specifications": {
+            "processor": "Intel Core 5 120U",
+            "ram": "16 GB DDR5",
+            "storage": "512 GB NVMe SSD",
+            "graphics": "Intel Graphics",
+            "display": "14-inch FHD+ IPS",
+            "operatingSystem": "Windows 11 Home"
+          },
+          "price": 74990,
+          "quantity": 1
+        },
+        {
+          "productId": "OyCon3oOunA",
+          "productName": "Lenovo ThinkPad E14 Gen 6",
+          "brand": "Lenovo",
+          "model": "ThinkPad E14 Gen 6",
+          "specifications": {
+            "processor": "Intel Core Ultra 5 125U",
+            "ram": "16 GB DDR5",
+            "storage": "512 GB NVMe SSD",
+            "graphics": "Intel Graphics",
+            "display": "14-inch WUXGA IPS, anti-glare",
+            "operatingSystem": "Windows 11 Pro"
+          },
+          "price": 89990,
+          "quantity": 1
+        }
+      ],
+      "total": 864820,
+      "createdAt": "2026-10-05T10:47:46.875Z",
+      "status": "Placed",
+      "id": "9Eele88Qdfo"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

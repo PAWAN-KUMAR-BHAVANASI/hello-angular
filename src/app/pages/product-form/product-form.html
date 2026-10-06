@@ -1,98 +1,86 @@
 <section class="card product-form-card">
-  <div class="form-header">
-    <p class="eyebrow">{{ isEditMode ? 'Edit Product' : 'Add Product' }}</p>
-    <h1>{{ isEditMode ? 'Update product details' : 'Create a new product' }}</h1>
-  </div>
+  <header class="form-header">
+    <p class="eyebrow">Laptop inventory</p>
+    <h1>{{ isEditMode ? 'Update laptop details' : 'Add a laptop' }}</h1>
+    <p>Enter the company, model, core specifications, and available stock.</p>
+  </header>
 
   <form [formGroup]="productForm" (ngSubmit)="saveProduct()">
-    <div class="field">
-      <label for="name">
-        Name<span class="required-mark">*</span>
-      </label>
-      <input
-        id="name"
-        formControlName="name"
-        type="text"
-        placeholder="Product name"
-      />
-    </div>
-
-    <div class="field">
-      <label for="category">
-        Category<span class="required-mark">*</span>
-      </label>
-
-      <div class="category-picker">
-        <input
-          id="category"
-          formControlName="category"
-          type="text"
-          placeholder="Select category"
-          readonly
-        />
-        <button type="button" class="drawer-trigger" (click)="openCategoryDrawer()">
-          Browse
-        </button>
+    <div class="form-grid">
+      <div class="field">
+        <label for="brand">Company<span class="required-mark">*</span></label>
+        <select id="brand" formControlName="brand">
+          <option value="" disabled>Select company</option>
+          @for (brand of laptopBrands; track brand) {
+            <option [value]="brand">{{ brand }}</option>
+          }
+        </select>
       </div>
 
-      <small class="helper-text">{{ getCategoryLimitText() }}</small>
+      <div class="field">
+        <label for="model">Model<span class="required-mark">*</span></label>
+        <input id="model" formControlName="model" type="text" placeholder="e.g. ThinkPad E14 Gen 6" />
+      </div>
+
+      <div class="field field-wide">
+        <label for="name">Product title<span class="required-mark">*</span></label>
+        <input id="name" formControlName="name" type="text" placeholder="Company + model name" />
+      </div>
+
+      <div class="field">
+        <label for="price">Price (INR)<span class="required-mark">*</span></label>
+        <input id="price" formControlName="price" type="number" min="0" placeholder="Price in rupees" />
+        @if (productForm.get('price')?.hasError('min')) {
+          <small class="error-text">Price cannot be negative.</small>
+        }
+      </div>
+
+      <div class="field">
+        <label>Available stock<span class="required-mark">*</span></label>
+        <div class="stepper stock-stepper">
+          <button type="button" aria-label="Decrease stock" [disabled]="productForm.controls.quantity.value === '1'" (click)="adjustStock(-1)">−</button>
+          <output>{{ productForm.controls.quantity.value }}</output>
+          <button type="button" aria-label="Increase stock" (click)="adjustStock(1)">+</button>
+        </div>
+      </div>
     </div>
 
-    <div class="field">
-      <label for="price">
-        Price<span class="required-mark">*</span>
-      </label>
-      <input
-        id="price"
-        formControlName="price"
-        type="number"
-        min="1"
-        placeholder="Enter amount"
-      />
+    <fieldset class="specifications-fieldset">
+      <legend>Technical specifications</legend>
+      <div class="form-grid">
+        <div class="field field-wide">
+          <label for="processor">Processor<span class="required-mark">*</span></label>
+          <input id="processor" formControlName="processor" type="text" placeholder="e.g. Intel Core Ultra 5 125U" />
+        </div>
+        <div class="field">
+          <label for="ram">Memory (RAM)<span class="required-mark">*</span></label>
+          <input id="ram" formControlName="ram" type="text" placeholder="e.g. 16 GB DDR5" />
+        </div>
+        <div class="field">
+          <label for="storage">Storage<span class="required-mark">*</span></label>
+          <input id="storage" formControlName="storage" type="text" placeholder="e.g. 512 GB NVMe SSD" />
+        </div>
+        <div class="field">
+          <label for="graphics">Graphics<span class="required-mark">*</span></label>
+          <input id="graphics" formControlName="graphics" type="text" placeholder="e.g. Intel Arc integrated" />
+        </div>
+        <div class="field">
+          <label for="display">Display<span class="required-mark">*</span></label>
+          <input id="display" formControlName="display" type="text" placeholder="e.g. 14-inch WUXGA IPS" />
+        </div>
+        <div class="field">
+          <label for="operatingSystem">Operating system<span class="required-mark">*</span></label>
+          <input id="operatingSystem" formControlName="operatingSystem" type="text" placeholder="e.g. Windows 11 Home" />
+        </div>
+        <div class="field">
+          <label for="createdAt">Listed date<span class="required-mark">*</span></label>
+          <input id="createdAt" formControlName="createdAt" type="date" />
+        </div>
+      </div>
+    </fieldset>
 
-      @if (productForm.get('price')?.hasError('categoryLimitExceeded')) {
-        <small class="error-text">
-          Price exceeds the max allowed for {{ productForm.get('category')?.value || 'this category' }}.
-        </small>
-      }
-    </div>
-
-    <div class="field">
-      <label for="createdAt">
-        Created date<span class="required-mark">*</span>
-      </label>
-      <input
-        id="createdAt"
-        formControlName="createdAt"
-        type="date"
-      />
-    </div>
-
-    <!-- Centered button -->
     <div class="form-actions">
-      <button class="primary-btn" type="submit">
-        {{ isEditMode ? 'Update Product' : 'Save Product' }}
-      </button>
+      <button class="primary-btn" type="submit">{{ isEditMode ? 'Save laptop changes' : 'Add laptop to store' }}</button>
     </div>
   </form>
 </section>
-
-@if (categoryDrawerOpen) {
-  <div class="category-drawer-backdrop" (click)="closeCategoryDrawer()">
-    <aside class="category-drawer" (click)="$event.stopPropagation()">
-      <div class="category-drawer-header">
-        <h2>Select category</h2>
-        <button type="button" class="close-drawer" (click)="closeCategoryDrawer()">×</button>
-      </div>
-
-      <div class="category-list">
-        @for (category of availableCategories; track category) {
-          <button type="button" class="category-option" (click)="selectCategory(category)">
-            <span>{{ category }}</span>
-            <small>Max: ₹{{ categoryLimits[category].toLocaleString('en-IN') }}</small>
-          </button>
-        }
-      </div>
-    </aside>
-  </div>
-}

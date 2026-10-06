@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
-export type UserRole = 'Admin' | 'Sales' | 'Customer';
+export type UserRole = 'Admin' | 'Customer';
 
 export interface AppUser {
+  id?: number | string;
   email: string;
   password: string;
-  role: UserRole;
   name: string;
+  role?: UserRole;
 }
 
 @Injectable({
@@ -14,15 +17,21 @@ export interface AppUser {
 })
 export class AuthService {
   private readonly storageKey = 'app-user';
+  private readonly apiUrl = 'http://localhost:3002/users';
 
-  private readonly users: AppUser[] = [
-    { email: 'admin@shop.com', password: 'admin123', role: 'Admin', name: 'Admin User' },
-    { email: 'sales@shop.com', password: 'sales123', role: 'Sales', name: 'Sales User' },
-    { email: 'customer@shop.com', password: 'customer123', role: 'Customer', name: 'Customer User' },
-  ];
+  constructor(private readonly http: HttpClient) {}
 
-  login(email: string, password: string): AppUser {
-    const foundUser = this.users.find(
+  private async fetchUsers(): Promise<AppUser[]> {
+    try {
+      return await firstValueFrom(this.http.get<AppUser[]>(this.apiUrl));
+    } catch {
+      throw new Error('Cannot reach the login database. Make sure JSON Server is running with npm run server.');
+    }
+  }
+
+  async login(email: string, password: string): Promise<AppUser> {
+    const users = await this.fetchUsers();
+    const foundUser = users.find(
       (user) => user.email.toLowerCase() === email.toLowerCase() && user.password === password,
     );
 
@@ -32,6 +41,29 @@ export class AuthService {
 
     localStorage.setItem(this.storageKey, JSON.stringify(foundUser));
     return foundUser;
+  }
+
+  async register(name: string, email: string, password: string): Promise<AppUser> {
+    const users = await this.fetchUsers();
+
+    if (users.some((user) => user.email.toLowerCase() === email.toLowerCase())) {
+      throw new Error('An account with this email already exists.');
+    }
+
+    try {
+      const newUser = await firstValueFrom(
+        this.http.post<AppUser>(this.apiUrl, {
+          name: name.trim(),
+          email: email.trim(),
+          password,
+          role: 'Customer',
+        }),
+      );
+      localStorage.setItem(this.storageKey, JSON.stringify(newUser));
+      return newUser;
+    } catch {
+      throw new Error('Could not create the account. Check that JSON Server is running and try again.');
+    }
   }
 
   logout(): void {
@@ -64,11 +96,12 @@ export class AuthService {
     }
 
     const hierarchy: Record<UserRole, number> = {
-      Admin: 3,
-      Sales: 2,
+      Admin: 2,
       Customer: 1,
     };
 
-    return hierarchy[user.role] >= hierarchy[requiredRole];
+    const userRole = user.role ?? 'Customer';
+    return hierarchy[userRole] >= hierarchy[requiredRole];
   }
+
 }

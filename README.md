@@ -1,59 +1,60 @@
-# HelloAngular
+# Hello Angular Store
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.0.
+A small Angular storefront with role-based access, product management, comparison, cart persistence, and quotation handling.
 
-## Development server
+## Run the app
 
-To start a local development server, run:
-
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+1. Install dependencies:
 
 ```bash
-ng generate component component-name
+npm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+2. Start the JSON server used for products and users:
 
 ```bash
-ng generate --help
+npm run server
 ```
 
-## Building
-
-To build the project run:
+3. Start the Angular app:
 
 ```bash
-ng build
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+4. Open the app at:
 
-## Running unit tests
+```text
+http://localhost:4201/
+```
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Demo users
+
+- Admin: admin@shop.com / Admin@123
+- Customer: any user who signs up and logs in with their own account details is treated as a customer
+
+## Feature checklist
+
+- Product form adds products with validation
+- Product price cannot be negative
+- Category-specific price caps are enforced
+- Up to 2 products can be compared
+- Product comparison shows category, price, and date
+- Cart persists after refresh using localStorage
+- Admin-only routes for product creation and editing
+- Customer access to cart and shopping flow
+- Customer shopping flow is restricted from admin-only actions
+
+## Test commands
 
 ```bash
-ng test
+npm run build
+npm test -- --watch=false --browsers=ChromeHeadless
 ```
 
-## Running end-to-end tests
+## Notes
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Product comparison is persisted in localStorage.
+- Cart items are stored under `cart-items`.
+- Quotations are stored under `app-quotations`.
+- Demo tag suggestion: `v1.0-demo` or `demo-role-flow-2026-10-01`.

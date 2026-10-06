@@ -1,4 +1,4 @@
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 
@@ -18,6 +18,7 @@ export class App {
     private readonly toastService: ToastService,
     private readonly authService: AuthService,
     private readonly router: Router,
+    private readonly location: Location,
   ) {
     this.toastState$ = this.toastService.toastState$;
   }
@@ -26,12 +27,39 @@ export class App {
     return this.authService.getCurrentUser();
   }
 
-  isAdmin(): boolean {
+  get canManageProducts(): boolean {
     return this.authService.hasPermission('Admin');
+  }
+
+  get userInitials(): string {
+    const user = this.currentUser;
+
+    if (!user) {
+      return 'U';
+    }
+
+    const initials = user.name
+      .split(' ')
+      .filter(Boolean)
+      .map((part) => part[0]?.toUpperCase() ?? '')
+      .join('');
+
+    return initials.slice(0, 2) || user.email.charAt(0).toUpperCase();
   }
 
   logout(): void {
     this.authService.logout();
     this.router.navigateByUrl('/login');
+  }
+
+  goBack(): void {
+    const state = this.location.getState() as { navigationId?: number };
+
+    if (state.navigationId && state.navigationId > 1) {
+      this.location.back();
+      return;
+    }
+
+    void this.router.navigateByUrl('/');
   }
 }

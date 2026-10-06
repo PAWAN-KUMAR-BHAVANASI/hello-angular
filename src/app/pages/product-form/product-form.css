@@ -17,6 +17,11 @@
   margin-bottom: 2rem;
 }
 
+.form-header > p:last-child {
+  margin: 0.5rem 0 0;
+  color: #64748b;
+}
+
 .eyebrow {
   margin: 0 0 0.5rem;
   color: #6366f1;
@@ -36,6 +41,31 @@ form {
   display: grid;
   gap: 1.25rem;
   margin-top: 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.field-wide {
+  grid-column: 1 / -1;
+}
+
+.specifications-fieldset {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 1.1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.specifications-fieldset legend {
+  padding: 0 0.4rem;
+  color: #334155;
+  font-weight: 800;
 }
 
 .field {
@@ -69,92 +99,35 @@ textarea::placeholder {
   font-size: 0.82rem;
 }
 
-.category-picker {
-  display: flex;
+.stepper {
+  display: inline-grid;
+  grid-template-columns: 40px 54px 40px;
   align-items: center;
-  gap: 0.75rem;
-}
-
-.category-picker input {
-  flex: 1;
-}
-
-.drawer-trigger {
-  border: none;
-  border-radius: 10px;
-  background: #e2e8f0;
-  color: #0f172a;
-  font-weight: 700;
-  padding: 0.8rem 1rem;
-  cursor: pointer;
-}
-
-.category-drawer-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.38);
-  display: flex;
-  justify-content: flex-end;
-  z-index: 100;
-}
-
-.category-drawer {
-  width: min(360px, 90vw);
-  height: 100%;
+  height: 42px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
   background: #fff;
-  box-shadow: -12px 0 30px rgba(15, 23, 42, 0.15);
-  padding: 1.5rem 1rem;
-  display: flex;
-  flex-direction: column;
 }
 
-.category-drawer-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-}
-
-.category-drawer-header h2 {
-  margin: 0;
-  font-size: 1.2rem;
-}
-
-.close-drawer {
-  border: none;
+.stepper button {
+  height: 40px;
+  border: 0;
   background: transparent;
-  font-size: 1.6rem;
-  line-height: 1;
-  cursor: pointer;
-  color: #334155;
-}
-
-.category-list {
-  display: grid;
-  gap: 0.75rem;
-}
-
-.category-option {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.2rem;
-  padding: 0.9rem 1rem;
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
-  border-radius: 12px;
-  cursor: pointer;
-  text-align: left;
-  color: #0f172a;
-}
-
-.category-option span {
+  color: #1d4ed8;
+  font-size: 1.25rem;
   font-weight: 700;
-  text-transform: capitalize;
+  cursor: pointer;
 }
 
-.category-option small {
-  color: #475569;
+.stepper button:disabled {
+  color: #a8b4c3;
+  cursor: not-allowed;
+}
+
+.stepper output {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
 }
 
 .error-text {
@@ -167,5 +140,36 @@ textarea::placeholder {
   justify-content: center;
   align-items: center;
   margin-top: 0.75rem;
+}
+
+@media (max-width: 620px) {
+  :host {
+    padding: 0.75rem 0 1.5rem;
+  }
+
+  .product-form-card {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .field-wide {
+    grid-column: auto;
+  }
+
+  .specifications-fieldset {
+    padding: 0.8rem;
+  }
+
+  .form-header {
+    margin-bottom: 1.25rem;
+  }
+
+  .form-actions .primary-btn {
+    width: 100%;
+  }
 }
 

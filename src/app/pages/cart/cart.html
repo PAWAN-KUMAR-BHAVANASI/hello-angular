@@ -1,26 +1,60 @@
 <section class="card cart-card">
-  <p class="eyebrow">Checkout</p>
+  <p class="eyebrow">Shopping bag</p>
   <h1>Your Cart</h1>
 
-  @if (cartItems.length === 0) {
+  @if (cartItems().length === 0) {
     <p class="empty-state">Your cart is empty.</p>
   } @else {
     <div class="cart-layout">
       <div class="cart-items">
-        @for (item of cartItems; track item.id) {
-          <div class="cart-item">
-            <div>
-              <h3>{{ item.name }}</h3>
-              <p>{{ item.category }}</p>
+        <div class="cart-toolbar">
+          <p>{{ cartItems().length }} laptop{{ cartItems().length === 1 ? '' : 's' }}</p>
+          @if (!isEditing) {
+            <button class="edit-cart-btn" type="button" (click)="beginEditing()">Edit cart</button>
+          } @else {
+            <div class="cart-edit-actions">
+              <button class="edit-cart-btn" type="button" (click)="cancelEditing()">Cancel</button>
+              <button class="save-cart-btn" type="button" [disabled]="isSavingCart" (click)="saveCartChanges()">
+                {{ isSavingCart ? 'Saving…' : 'Save changes' }}
+              </button>
             </div>
-            <strong>{{ item.price | currency: 'INR' }}</strong>
+          }
+        </div>
+        @for (item of cartItems(); track item.id) {
+          <div class="cart-item">
+            <div class="item-details">
+              <h3>{{ item.productName }}</h3>
+              <p>{{ item.brand || 'Laptop' }} · {{ item.model || item.productName }}</p>
+              @if (item.specifications; as specs) {
+                <p>{{ specs.processor }} · {{ specs.ram }} · {{ specs.storage }}</p>
+              }
+              <strong>{{ item.price | currency: 'INR' }} each</strong>
+            </div>
+            <label class="quantity-control">
+              <span>Qty</span>
+              <div class="stepper">
+                <button type="button" [attr.aria-label]="'Decrease ' + item.productName" [disabled]="!isEditing || quantityFor(item) <= 1" (click)="updateQuantity(item, quantityFor(item) - 1)">−</button>
+                <output>{{ quantityFor(item) }}</output>
+                <button type="button" [attr.aria-label]="'Increase ' + item.productName" [disabled]="!isEditing || quantityFor(item) >= item.availableQuantity" (click)="updateQuantity(item, quantityFor(item) + 1)">+</button>
+              </div>
+            </label>
+            <strong class="line-total">{{ item.price * quantityFor(item) | currency: 'INR' }}</strong>
+            <button class="remove-item" type="button" [disabled]="isEditing" (click)="removeItem(item)" [attr.aria-label]="'Remove ' + item.productName">
+              Remove item
+            </button>
           </div>
         }
       </div>
 
       <aside class="checkout-box">
-        <h3>Order Summary</h3>
-        <p>Total: <strong>{{ totalPrice | currency: 'INR' }}</strong></p>
+        <p class="eyebrow">Checkout</p>
+        <h2>Order summary</h2>
+        <div class="summary-lines">
+          @for (item of cartItems(); track item.id) {
+            <p><span>{{ item.productName }} × {{ quantityFor(item) }}</span><strong>{{ item.price * quantityFor(item) | currency: 'INR' }}</strong></p>
+          }
+        </div>
+        <p class="summary-total"><span>Total</span><strong>{{ totalPrice | currency: 'INR' }}</strong></p>
 
         <form [formGroup]="checkoutForm" (ngSubmit)="submitCheckout()">
           <div class="field">
@@ -37,18 +71,9 @@
             <textarea id="address" formControlName="address"></textarea>
           </div>
 
-          <div class="field">
-            <label for="paymentMethod">
-              Payment Method<span class="required-mark">*</span>
-            </label>
-            <select id="paymentMethod" formControlName="paymentMethod">
-              <option value="Card">Card</option>
-              <option value="UPI">UPI</option>
-              <option value="Cash on Delivery">Cash on Delivery</option>
-            </select>
-          </div>
-
-          <button class="primary-btn" type="submit">Place Order</button>
+          <button class="primary-btn" type="submit" [disabled]="cartItems().length === 0 || isSubmitting || isEditing">
+            {{ isSubmitting ? 'Saving order…' : 'Place order' }}
+          </button>
         </form>
       </aside>
     </div>

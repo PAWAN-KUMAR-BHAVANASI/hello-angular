@@ -1,0 +1,41 @@
+<section class="card signup-card">
+  <p class="eyebrow">Account</p>
+  <h1>Create account</h1>
+
+  <form [formGroup]="signupForm" (ngSubmit)="submitSignup()">
+    <div class="field">
+      <label for="signup-name">Name<span class="required-mark">*</span></label>
+      <input id="signup-name" formControlName="name" type="text" autocomplete="name" placeholder="Your name" />
+      @if (signupForm.controls.name.touched && signupForm.controls.name.invalid) {
+        <p class="field-error">Enter your name (up to 60 characters).</p>
+      }
+    </div>
+
+    <div class="field">
+      <label for="signup-email">Email<span class="required-mark">*</span></label>
+      <input id="signup-email" formControlName="email" type="email" autocomplete="email" placeholder="name@example.com" />
+      @if (signupForm.controls.email.touched && signupForm.controls.email.invalid) {
+        <p class="field-error">Enter a valid email address.</p>
+      }
+    </div>
+
+    <div class="field">
+      <label for="signup-password">Password<span class="required-mark">*</span></label>
+      <input id="signup-password" formControlName="password" type="password" autocomplete="new-password" placeholder="Create a password" />
+      <small class="password-hint">Use 8-15 characters, including at least one uppercase letter and one special character.</small>
+      @if (signupForm.controls.password.touched && signupForm.controls.password.invalid) {
+        <p class="field-error">Password must be 8-15 characters and include an uppercase letter and a special character.</p>
+      }
+    </div>
+
+    <div class="form-actions">
+      <button class="primary-btn" type="submit">Create account</button>
+    </div>
+
+    @if (signupMessage) {
+      <p [class.error-message]="signupError" [class.success-message]="!signupError" role="status">{{ signupMessage }}</p>
+    }
+
+    <a class="mode-toggle" routerLink="/login">Already have an account? Login</a>
+  </form>
+</section>

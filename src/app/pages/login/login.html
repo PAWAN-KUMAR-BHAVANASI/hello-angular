@@ -7,14 +7,14 @@
       <label for="email">
         Email<span class="required-mark">*</span>
       </label>
-      <input id="email" formControlName="email" type="email" placeholder="name@example.com" />
+      <input id="email" formControlName="email" type="email" autocomplete="email" placeholder="name@example.com" />
     </div>
 
     <div class="field">
       <label for="password">
         Password<span class="required-mark">*</span>
       </label>
-      <input id="password" formControlName="password" type="password" placeholder="Enter password" />
+      <input id="password" formControlName="password" type="password" autocomplete="current-password" placeholder="Enter password" />
     </div>
 
     <label class="checkbox-row">
@@ -27,7 +27,9 @@
     </div>
 
     @if (loginMessage) {
-      <p class="success-message">{{ loginMessage }}</p>
+      <p [class.error-message]="loginError" [class.success-message]="!loginError" role="status">{{ loginMessage }}</p>
     }
+
+    <a class="mode-toggle" routerLink="/signup">New here? Create an account</a>
   </form>
 </section>

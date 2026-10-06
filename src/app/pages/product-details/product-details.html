@@ -1,0 +1,56 @@
+@if (product; as item) {
+  <article class="details-page">
+    <a class="back-link" routerLink="/">← Back to laptops</a>
+    <div class="details-layout">
+      <div class="product-photo-wrap">
+        <img class="product-photo" [src]="productImage" [alt]="item.name" />
+      </div>
+      <section class="product-information">
+        <p class="eyebrow">{{ item.brand || 'Laptop' }}</p>
+        <h1>{{ item.name }}</h1>
+        @if (item.model) {
+          <p class="model-line">{{ item.model }}</p>
+        }
+        <p class="detail-price">{{ item.price | currency: 'INR' }}</p>
+        <p class="stock-status">{{ item.quantity }} available to ship</p>
+        <p class="detail-copy">Explore performance, display, memory, and storage details before choosing the right laptop for you.</p>
+
+        <dl class="spec-list">
+          <div><dt>Company</dt><dd>{{ item.brand || 'Laptop' }}</dd></div>
+          <div><dt>Processor</dt><dd>{{ item.specifications?.processor || 'Not specified' }}</dd></div>
+          <div><dt>Memory</dt><dd>{{ item.specifications?.ram || 'Not specified' }}</dd></div>
+          <div><dt>Storage</dt><dd>{{ item.specifications?.storage || 'Not specified' }}</dd></div>
+          <div><dt>Graphics</dt><dd>{{ item.specifications?.graphics || 'Not specified' }}</dd></div>
+          <div><dt>Display</dt><dd>{{ item.specifications?.display || 'Not specified' }}</dd></div>
+          <div><dt>Operating system</dt><dd>{{ item.specifications?.operatingSystem || 'Not specified' }}</dd></div>
+          <div><dt>Added</dt><dd>{{ item.createdAt | date: 'dd MMM yyyy' }}</dd></div>
+        </dl>
+
+        @if (canShop) {
+          <button class="wishlist-btn detail-wishlist" [class.active]="isWishlisted" type="button" (click)="toggleWishlist()" [attr.aria-pressed]="isWishlisted">
+            {{ isWishlisted ? '♥' : '♡' }} <span>{{ isWishlisted ? 'Saved to wishlist' : 'Add to wishlist' }}</span>
+          </button>
+          <label class="quantity-field">
+            <span>Quantity</span>
+            <div class="stepper">
+              <button type="button" aria-label="Decrease quantity" [disabled]="quantity() <= 1" (click)="adjustQuantity(-1)">−</button>
+              <output>{{ quantity() }}</output>
+              <button type="button" aria-label="Increase quantity" [disabled]="quantity() >= item.quantity" (click)="adjustQuantity(1)">+</button>
+            </div>
+          </label>
+          <button class="primary-btn" type="button" (click)="addToCart()">Add to Cart</button>
+        }
+        <button class="compare-btn" [class.selected]="isCompared" type="button" (click)="toggleComparison()">
+          {{ isCompared ? 'Remove from comparison' : 'Compare product' }}
+          <span>{{ comparisonCount }}/2</span>
+        </button>
+      </section>
+    </div>
+  </article>
+} @else {
+  <section class="missing-product">
+    <p class="eyebrow">Not found</p>
+    <h1>This product is unavailable</h1>
+    <a class="primary-btn" routerLink="/">Return to the catalog</a>
+  </section>
+}

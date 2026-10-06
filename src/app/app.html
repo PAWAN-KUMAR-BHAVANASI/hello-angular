@@ -1,16 +1,34 @@
 <header class="topbar">
   <nav class="nav" aria-label="Main navigation">
-    <a class="nav-back" routerLink="/" aria-label="Go back">←</a>
+    <a class="brand-link" routerLink="/" aria-label="Laptop Store home">
+      <img class="brand-logo" src="/store-logo.svg" alt="Laptop Store" />
+    </a>
+    <button class="nav-back" type="button" aria-label="Go back" (click)="goBack()">←</button>
     <a routerLink="/">Home</a>
-    @if (isAdmin()) {
+    @if (canManageProducts) {
       <a routerLink="/products/new">Add Product</a>
     }
     @if (!currentUser) {
       <a routerLink="/login">Login</a>
+      <a routerLink="/signup">Sign Up</a>
     }
-    <a routerLink="/cart">Cart</a>
+    @if (currentUser?.role === 'Customer' || !currentUser) {
+      <a routerLink="/cart">Cart</a>
+    }
+    @if (currentUser?.role === 'Customer') {
+      <a routerLink="/wishlist" aria-label="Wishlist">♡ Wishlist</a>
+    }
     @if (currentUser) {
-      <button type="button" class="logout-btn" (click)="logout()">Logout</button>
+      <a routerLink="/orders">{{ currentUser.role === 'Admin' ? 'Orders' : 'My orders' }}</a>
+    }
+    @if (currentUser) {
+      <div class="user-profile">
+        <span class="profile-badge" aria-label="Logged in user">{{ userInitials }}</span>
+        <span class="user-meta">
+          <strong>{{ currentUser.name }}</strong>
+        </span>
+        <button type="button" class="logout-btn" (click)="logout()">Logout</button>
+      </div>
     }
   </nav>
 </header>

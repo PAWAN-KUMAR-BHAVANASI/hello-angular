@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ProductInput, ProductService } from '../../services/product.service';
@@ -13,18 +13,9 @@ import { ToastService } from '../../services/toast.service';
 })
 export class ProductFormPage implements OnInit {
   isEditMode = false;
-  productId: number | null = null;
+  productId: number | string | null = null;
   productForm!: ReturnType<ProductFormPage['createProductForm']>;
-  categoryDrawerOpen = false;
-
-  readonly availableCategories = ['electronics', 'accessories', 'clothing', 'books'];
-
-  private readonly categoryLimits: Record<string, number> = {
-    electronics: 100000,
-    accessories: 15000,
-    clothing: 5000,
-    books: 2000,
-  };
+  readonly laptopBrands = ['Acer', 'Apple', 'ASUS', 'Dell', 'HP', 'Lenovo', 'MSI'];
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -34,27 +25,48 @@ export class ProductFormPage implements OnInit {
     private readonly toastService: ToastService,
   ) {
     this.productForm = this.createProductForm();
-    this.productForm.get('category')?.valueChanges.subscribe(() => {
-      this.productForm.get('price')?.updateValueAndValidity();
-    });
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     const id = this.route.snapshot.paramMap.get('id');
 
     if (id) {
-      this.productId = Number(id);
+      await this.productService.ensureProductsLoaded();
+      this.productId = id;
       this.isEditMode = true;
-      const product = this.productService.getProductById(this.productId);
+      let product = this.productService.getProductById(this.productId);
 
-      if (product) {
-        this.productForm.patchValue({
-          name: product.name,
-          category: product.category,
-          price: product.price,
-          createdAt: this.toDateInputValue(product.createdAt),
-        });
+      if (!product) {
+        try {
+          await this.productService.reloadProducts();
+          product = this.productService.getProductById(this.productId);
+        } catch {
+          this.toastService.showError('Could not load the selected product. Please try again.');
+          await this.router.navigateByUrl('/');
+          return;
+        }
       }
+
+      if (!product || !this.productService.canManageProduct(product)) {
+        this.toastService.showError('You can only edit products owned by your account.');
+        await this.router.navigateByUrl('/');
+        return;
+      }
+
+      this.productForm.patchValue({
+        name: product.name,
+        brand: product.brand ?? '',
+        model: product.model ?? '',
+        price: String(product.price),
+        quantity: String(product.quantity),
+        processor: product.specifications?.processor ?? '',
+        ram: product.specifications?.ram ?? '',
+        storage: product.specifications?.storage ?? '',
+        graphics: product.specifications?.graphics ?? '',
+        display: product.specifications?.display ?? '',
+        operatingSystem: product.specifications?.operatingSystem ?? '',
+        createdAt: this.toDateInputValue(product.createdAt),
+      });
     }
   }
 
@@ -67,8 +79,18 @@ export class ProductFormPage implements OnInit {
 
     const productInput: ProductInput = {
       name: this.productForm.value.name ?? '',
-      category: this.productForm.value.category ?? '',
+      brand: this.productForm.value.brand ?? '',
+      model: this.productForm.value.model ?? '',
       price: Number(this.productForm.value.price ?? 0),
+      quantity: Number(this.productForm.value.quantity ?? 1),
+      specifications: {
+        processor: this.productForm.value.processor ?? '',
+        ram: this.productForm.value.ram ?? '',
+        storage: this.productForm.value.storage ?? '',
+        graphics: this.productForm.value.graphics ?? '',
+        display: this.productForm.value.display ?? '',
+        operatingSystem: this.productForm.value.operatingSystem ?? '',
+      },
       createdAt: this.productForm.value.createdAt ?? new Date(),
     };
 
@@ -86,54 +108,24 @@ export class ProductFormPage implements OnInit {
   private createProductForm() {
     return this.formBuilder.nonNullable.group({
       name: ['', Validators.required],
-      category: ['', Validators.required],
-      price: [0, [Validators.required, Validators.min(1), this.priceLimitValidator()]],
+      brand: ['', Validators.required],
+      model: ['', Validators.required],
+      price: ['', [Validators.required, Validators.min(0)]],
+      quantity: ['1', [Validators.required, Validators.min(1), Validators.pattern(/^\d+$/)]],
+      processor: ['', Validators.required],
+      ram: ['', Validators.required],
+      storage: ['', Validators.required],
+      graphics: ['', Validators.required],
+      display: ['', Validators.required],
+      operatingSystem: ['', Validators.required],
       createdAt: [this.toDateInputValue(new Date()), Validators.required],
     });
   }
 
-  openCategoryDrawer(): void {
-    this.categoryDrawerOpen = true;
-  }
-
-  closeCategoryDrawer(): void {
-    this.categoryDrawerOpen = false;
-  }
-
-  selectCategory(category: string): void {
-    this.productForm.get('category')?.setValue(category);
-    this.productForm.get('price')?.updateValueAndValidity();
-    this.closeCategoryDrawer();
-  }
-
-  getCategoryLimitText(): string {
-    const category = (this.productForm.get('category')?.value ?? '').toString().trim().toLowerCase();
-    const limit = this.categoryLimits[category];
-
-    if (!category || limit === undefined) {
-      return 'Choose a category to see the max allowed price.';
-    }
-
-    return `Max allowed for ${category}: ₹${limit.toLocaleString('en-IN')}`;
-  }
-
-  private priceLimitValidator() {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const price = Number(control.value ?? 0);
-      const category = (control.parent?.get('category')?.value ?? '').toString().trim().toLowerCase();
-
-      if (!category || price === 0) {
-        return null;
-      }
-
-      const limit = this.categoryLimits[category];
-
-      if (limit !== undefined && price > limit) {
-        return { categoryLimitExceeded: true };
-      }
-
-      return null;
-    };
+  adjustStock(change: number): void {
+    const control = this.productForm.get('quantity');
+    const current = Number(control?.value || 1);
+    control?.setValue(String(Math.max(1, Math.min(9999, current + change))));
   }
 
   private static toDateInputValue(date: Date | string): string {

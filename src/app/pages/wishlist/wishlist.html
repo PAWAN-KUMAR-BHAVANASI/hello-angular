@@ -1,0 +1,36 @@
+<section class="wishlist-page">
+  <header class="wishlist-header">
+    <div>
+      <p class="eyebrow">Saved for later</p>
+      <h1>Your wishlist <span>{{ products().length }}</span></h1>
+      <p>Keep your favorite laptops together.</p>
+    </div>
+    <a class="continue-shopping" routerLink="/">Continue shopping</a>
+  </header>
+
+  @if (products().length === 0) {
+    <section class="wishlist-empty">
+      <span class="empty-heart" aria-hidden="true">♡</span>
+      <h2>Your wishlist is waiting</h2>
+      <p>Tap the heart on a laptop to save it here.</p>
+      <a class="browse-link" routerLink="/">Browse laptops</a>
+    </section>
+  } @else {
+    <div class="wishlist-grid">
+      @for (product of products(); track product.id) {
+        <article class="wishlist-item">
+          <button type="button" class="remove-heart" [attr.aria-label]="'Remove ' + product.name + ' from wishlist'" (click)="remove(product)">♥</button>
+          <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=900&q=80" [alt]="product.name" />
+          <p class="brand">{{ product.brand }}</p>
+          <h2>{{ product.name }}</h2>
+          <p class="model">{{ product.model }}</p>
+          <strong>{{ product.price | currency: 'INR' }}</strong>
+          <div class="wishlist-actions">
+            <a [routerLink]="['/products', product.id]">Details</a>
+            <button type="button" (click)="addToCart(product)">Add to cart</button>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>

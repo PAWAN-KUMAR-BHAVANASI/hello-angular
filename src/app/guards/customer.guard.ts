@@ -3,16 +3,17 @@ import { CanActivateFn, Router } from '@angular/router';
 
 import { AuthService } from '../services/auth.service';
 
-export const adminGuard: CanActivateFn = () => {
+export const customerGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  const isAllowed = authService.hasPermission('Admin');
+  const isAllowed = authService.hasPermission('Customer');
 
   if (isAllowed) {
     return true;
   }
 
-  router.navigateByUrl('/login');
-  return false;
+  return authService.isLoggedIn()
+    ? router.createUrlTree(['/'])
+    : router.createUrlTree(['/login']);
 };

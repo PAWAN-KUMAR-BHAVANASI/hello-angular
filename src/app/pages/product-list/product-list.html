@@ -1,35 +1,205 @@
 <section class="page-header">
   <div>
-    <p class="eyebrow">Inventory</p>
-    <h1>Product Management</h1>
+    <p class="eyebrow">Laptop store</p>
+    <h1>Find your next laptop</h1>
+
+    <!-- Comparison count -->
+    <p class="comparison-count">
+      Selected for comparison: {{ comparisonCount }}/2
+    </p>
   </div>
 
-  @if (isAdmin()) {
-    <a class="primary-btn" routerLink="/products/new">Add Product</a>
-  }
+  <div class="header-actions">
+    @if (isAdmin) {
+      <label class="account-filter">
+        <span>Filter by account</span>
+        <select [value]="selectedOwnerEmail" (change)="setOwnerFilter($event)">
+          <option value="all">All accounts</option>
+          @for (email of ownerEmails; track email) {
+            <option [value]="email">{{ email }}</option>
+          }
+          @if (products().some(product => !product.ownerEmail)) {
+            <option value="unassigned">Unassigned products</option>
+          }
+        </select>
+      </label>
+    }
+
+    @if (canManageProducts) {
+      <a class="primary-btn" routerLink="/products/new">
+        Add Product
+      </a>
+    }
+
+    <!-- View Comparison -->
+    <a
+      class="secondary-btn"
+      routerLink="/product-comparison"
+      [class.disabled-btn]="!canCompare()"
+      [attr.aria-disabled]="!canCompare()"
+      [style.pointer-events]="canCompare() ? 'auto' : 'none'"
+    >
+      View Comparison
+    </a>
+  </div>
 </section>
 
-@if (products.length === 0) {
-  <div class="empty-state">No products available.</div>
+<section class="catalog-tools" aria-label="Search and filter products">
+  <label class="search-control">
+    <span>Search products</span>
+    <input type="search" placeholder="Search by laptop, company, or specs" [value]="searchTerm" (input)="setSearch($event)" />
+  </label>
+  <label class="filter-control">
+    <span>Company</span>
+    <select [value]="selectedBrand" (change)="setBrand($event)">
+      <option value="all">All companies</option>
+      @for (brand of brands; track brand) {
+        <option [value]="brand">{{ brand }}</option>
+      }
+    </select>
+  </label>
+  <label class="filter-control">
+    <span>Sort by</span>
+    <select [value]="sortOrder" (change)="setSort($event)">
+      <option value="recommended">Recommended</option>
+      <option value="price-low">Price: low to high</option>
+      <option value="price-high">Price: high to low</option>
+      <option value="name">Name</option>
+    </select>
+  </label>
+</section>
+
+<p class="results-count">{{ visibleProducts.length }} products</p>
+
+@if (visibleProducts.length === 0) {
+
+  <div class="empty-state">
+    {{ products().length === 0 ? 'The catalog is empty right now.' : 'No products match these filters.' }}
+  </div>
+
 } @else {
+
   <div class="product-grid">
-    @for (product of products; track product.id) {
+
+    @for (product of visibleProducts; track product.id; let index = $index) {
+
       <article class="product-card">
+
+        <button
+          class="wishlist-btn"
+          [class.active]="isWishlisted(product)"
+          type="button"
+          [attr.aria-label]="isWishlisted(product) ? 'Remove from wishlist' : 'Add to wishlist'"
+          [attr.aria-pressed]="isWishlisted(product)"
+          (click)="toggleWishlist(product)"
+        >
+          {{ isWishlisted(product) ? '♥' : '♡' }}
+        </button>
+
+        <a class="product-image-link" [routerLink]="['/products', product.id]" [attr.aria-label]="'View ' + product.name">
+          <img class="product-image" [src]="getProductImage(product)" [alt]="product.name" [attr.loading]="index < 4 ? 'eager' : 'lazy'" />
+        </a>
+
+        <!-- Product Header -->
         <div class="product-header">
+
           <h3>{{ product.name }}</h3>
-          <span class="badge">{{ product.category }}</span>
+
+          <span class="badge">{{ product.brand || 'Laptop' }}</span>
+
         </div>
 
-        <p class="price">{{ product.price | currency: 'INR' }}</p>
-        <p class="meta">Added on {{ product.createdAt | date: 'dd-MM-yyyy' }}</p>
-
-        @if (isAdmin()) {
-          <div class="actions">
-            <a class="secondary-btn" [routerLink]="['/products/edit', product.id]">Edit</a>
-            <button class="danger-btn" type="button" (click)="deleteProduct(product.id)">Delete</button>
-          </div>
+        @if (isAdmin) {
+          <p class="owner-meta">Account: {{ product.ownerEmail || 'Unassigned' }}</p>
         }
+
+
+        <!-- Product Price -->
+        <p class="price">
+          {{ product.price | currency: 'INR' }}
+        </p>
+
+          <p class="stock-meta">{{ product.quantity }} in stock</p>
+          @if (product.model) {
+            <p class="model-meta">{{ product.model }}</p>
+          }
+          @if (product.specifications; as specs) {
+            <p class="spec-highlights">{{ specs.processor }} · {{ specs.ram }} · {{ specs.storage }}</p>
+          }
+
+
+        <!-- Product Date -->
+        <p class="meta">
+          Added on {{ product.createdAt | date: 'dd-MM-yyyy' }}
+        </p>
+
+
+        <!-- Product Actions -->
+        <div class="actions">
+
+          <a class="details-btn" [routerLink]="['/products', product.id]">View details</a>
+
+          @if (canShop) {
+            <label class="cart-quantity">
+              <span>Quantity</span>
+              <div class="stepper">
+                <button type="button" aria-label="Decrease quantity" [disabled]="getAddQuantity(product) <= 1" (click)="adjustAddQuantity(product, -1)">−</button>
+                <output>{{ getAddQuantity(product) }}</output>
+                <button type="button" aria-label="Increase quantity" [disabled]="getAddQuantity(product) >= product.quantity" (click)="adjustAddQuantity(product, 1)">+</button>
+              </div>
+            </label>
+            <button class="primary-btn" type="button" (click)="addToCart(product)">
+              Add to Cart
+            </button>
+          }
+
+          @if (canManageProducts) {
+            <a
+              class="secondary-btn"
+              [routerLink]="['/products/edit', product.id]"
+            >
+              Edit
+            </a>
+
+            <button
+              class="danger-btn"
+              type="button"
+              (click)="deleteProduct(product.id)"
+            >
+              Delete
+            </button>
+          }
+
+
+          <!-- Compare -->
+          @if (isCompared(product)) {
+
+            <button
+              class="compare-btn selected"
+              type="button"
+              (click)="removeFromComparison(product)"
+            >
+              Selected
+            </button>
+
+          } @else {
+
+            <button
+              class="compare-btn"
+              type="button"
+              (click)="compareProduct(product)"
+            >
+              Compare
+            </button>
+
+          }
+
+        </div>
+
       </article>
+
     }
+
   </div>
+
 }

@@ -1,17 +1,18 @@
 import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
 export class LoginPage {
   loginMessage = '';
+  loginError = false;
   loginForm!: ReturnType<LoginPage['createLoginForm']>;
 
   constructor(
@@ -25,26 +26,27 @@ export class LoginPage {
   private createLoginForm() {
     return this.formBuilder.nonNullable.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required]],
       rememberMe: [false],
     });
   }
 
-  submitLogin(): void {
+  async submitLogin(): Promise<void> {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
     }
 
-    const email = this.loginForm.value.email ?? '';
-    const password = this.loginForm.value.password ?? '';
+    const { email, password } = this.loginForm.getRawValue();
 
     try {
-      const user = this.authService.login(email, password);
-      this.loginMessage = `Welcome ${user.name}! You are logged in as ${user.role}.`;
+      const user = await this.authService.login(email, password);
+      this.loginMessage = `Welcome ${user.name}! You are logged in.`;
+      this.loginError = false;
       this.router.navigateByUrl('/');
     } catch (error) {
       this.loginMessage = error instanceof Error ? error.message : 'Login failed.';
+      this.loginError = true;
     }
   }
 }

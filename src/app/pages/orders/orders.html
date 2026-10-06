@@ -1,0 +1,55 @@
+<section class="orders-page">
+  <header class="orders-header">
+    <div>
+      <p class="eyebrow">Account</p>
+      <h1>{{ isAdmin ? 'Customer orders' : 'Your orders' }}</h1>
+      <p class="orders-intro">{{ isAdmin ? 'Review orders across all customer accounts.' : 'Your placed orders and delivery details.' }}</p>
+      @if (!isAdmin && accountEmail) {
+        <p class="orders-account">Order history for {{ accountEmail }}</p>
+      }
+    </div>
+    <a class="back-to-shop" routerLink="/">Continue shopping</a>
+  </header>
+
+  @if (isLoading()) {
+    <p class="orders-state">Loading orders…</p>
+  } @else if (orders().length === 0) {
+    <section class="orders-state">
+      <h2>No orders yet</h2>
+      <p>{{ isAdmin ? 'Placed orders will appear here.' : 'Orders placed with this account will appear here.' }}</p>
+      <a class="shop-link" routerLink="/">Browse laptops</a>
+    </section>
+  } @else {
+    <div class="orders-list">
+      @for (order of orders(); track order.id) {
+        <article class="order-record">
+          <header class="order-heading">
+            <div>
+              <p class="order-number">Order #{{ order.id }}</p>
+              <p class="order-date">{{ order.createdAt | date: 'dd MMM yyyy, h:mm a' }}</p>
+            </div>
+            <span class="order-status">{{ order.status }}</span>
+          </header>
+
+          @if (isAdmin) {
+            <p class="order-owner">{{ order.customerName }} · {{ order.ownerEmail }}</p>
+          }
+
+          <div class="order-lines">
+            @for (item of order.items; track item.productId) {
+              <div class="order-line">
+                <span>{{ item.productName }} <small>× {{ item.quantity }}</small></span>
+                <strong>{{ item.price * item.quantity | currency: 'INR' }}</strong>
+              </div>
+            }
+          </div>
+
+          <footer class="order-footer">
+            <span>Deliver to: {{ order.address }}</span>
+            <strong>{{ order.total | currency: 'INR' }}</strong>
+          </footer>
+        </article>
+      }
+    </div>
+  }
+</section>
